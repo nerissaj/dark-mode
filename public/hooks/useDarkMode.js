@@ -1,25 +1,39 @@
-import useLocalStorage from './useLocalStorage';
-import React, {useEffect} from 'react';
+
+import  {useState, useEffect} from 'react';
+
+const useLocalStorage = (key, initialValue) => {
+    const [storedValue, setStoredValue] = useState(() => {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    });
+    const setValue = value => {
+      setStoredValue(value);
+      window.localStorage.setItem(key, JSON.stringify(value));
+    };
+    return [storedValue, setValue];
+  };
+  
 
 
 export default () => {
-    const [dark, setDark] = useLocalStorage('dark-mode', false)
+    const [enabled, setEnabled] = useLocalStorage('dark', false);
     useEffect(() => {
-        
-        if (dark===true){
-           document.body.classList.add("dark-mode")
+  const className ='dark-mode';
+        if (enabled) {
+           document.body.classList.add(className);
             } 
             else {
-             document.body.classList.remove("dark-mode")
+             document.body.classList.remove(className);
             }
-        }, [dark-mode]);
+        }, [enabled]);
 
-    useLocalStorage("dark-mode", false)
-    return(
+  
+    return [enabled, setEnabled];
        
-           setDark(toggle) 
+         
            
     
-    )
-        
+    };
+
+       
     
